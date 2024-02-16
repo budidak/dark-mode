@@ -29,6 +29,15 @@
       </article>
     </main>
     <footer></footer>
-    <script id="theme.js"></script>
+    <script id="theme.js">
+      const doc = document.documentElement;
+      const toggle = document.getElementById("toggle");
+      toggle.addEventListener("change", toggleTheme);
+      function toggleTheme() {
+        const currentTheme = doc.getAttribute("data-theme");
+        let newTheme = currentTheme === "dark" ? "light" : "dark";
+        doc.setAttribute("data-theme", newTheme);
+      }
+    </script>
   </body>
 </html>
