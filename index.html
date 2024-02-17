@@ -6,13 +6,23 @@
     <title>Dark Mode | Vanilla JS Projects</title>
     <link rel="stylesheet" crossorigin href="assets/pico.css" />
     <link rel="stylesheet" crossorigin href="assets/darklight.css" />
+    <style>
+      form {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 1em;
+      }
+    </style>
   </head>
+
   <body class="container grid">
     <header>
       <h1>dark mode</h1>
     </header>
     <nav style="align-self: center">
-      <label>
+      <label id="dark-mode">
         <input
           type="checkbox"
           id="toggle"
@@ -29,15 +39,87 @@
       </article>
     </main>
     <footer></footer>
+
     <script id="theme.js">
       const doc = document.documentElement;
       const toggle = document.getElementById("toggle");
-      toggle.addEventListener("change", toggleTheme);
       function toggleTheme() {
         const currentTheme = doc.getAttribute("data-theme");
+        const currentHeading =
+          document.getElementsByTagName("h1")[0].textContent;
         let newTheme = currentTheme === "dark" ? "light" : "dark";
+        let newHeading =
+          currentHeading === "dark mode" ? "light mode" : "dark mode";
         doc.setAttribute("data-theme", newTheme);
+        document.getElementsByTagName("h1")[0].textContent = newHeading;
       }
+      toggle.addEventListener("change", toggleTheme);
+    </script>
+
+    <script id="modal.js">
+      class Form {
+        element = document.createElement("form");
+        heading = document.createElement("h2");
+        closeButton = document.createElement("button");
+
+        constructor(type, title, content) {
+          // console.error("Form constructor is not implemented!");
+          this.element.setAttribute("type", type);
+          this.heading.textContent = title;
+          this.closeButton.setAttribute("type", "submit"); // <button type="submit"></button>
+          this.closeButton.classList.add("secondary");
+          this.closeButton.textContent = "Close"; // <button type="submit">Close</button>
+          this.element.appendChild(this.heading);
+          this.element.appendChild(content);
+          this.element.appendChild(this.closeButton);
+        }
+      }
+
+      class Modal {
+        openButton = document.createElement("button");
+        dialog = document.createElement("dialog");
+
+        constructor(name, parentElement, contentElement) {
+          // console.error("Modal constructor is not implemented!");
+          this.name = name;
+          this.openButton.setAttribute("id", name);
+          this.openButton.textContent = name;
+          this.parent = parentElement;
+          this.content = contentElement;
+          this.#setupForm();
+          this.#registerOpenListener();
+        }
+
+        #setupForm() {
+          const article = document.createElement("article");
+          const form = new Form("dialog", this.name, this.content);
+          article.appendChild(form.element);
+          this.dialog.appendChild(article);
+          const dialog = this.dialog;
+          form.element.addEventListener("submit", (event) => {
+            event.preventDefault();
+            dialog.close();
+          });
+        }
+
+        #registerOpenListener() {
+          const dialog = this.dialog;
+          this.openButton.addEventListener("click", () => {
+            dialog.showModal();
+          });
+        }
+
+        render() {
+          // console.error("render method is not implemented yet!");
+          this.parent.replaceChildren(this.openButton);
+          this.parent.appendChild(this.dialog);
+        }
+      }
+
+      const parent = document.querySelector("nav");
+      const content = document.getElementById("dark-mode");
+      const darkModal = new Modal("Settings", parent, content);
+      darkModal.render();
     </script>
   </body>
 </html>
